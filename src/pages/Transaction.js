@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
+import axios from "../axios";
 import data from "../data.json";
 import styled from "styled-components";
 import TableView from "../components/TableView";
@@ -39,7 +40,12 @@ class Transaction extends Component {
   };
 
   componentDidMount() {
-    this.setState({ transaction: data.sort((a, b) => b.id - a.id) });
+    //this.setState({ transaction: data.sort((a, b) => b.id - a.id) });
+    axios.get("/transactions").then(response => {
+      this.setState({
+        transaction: response.data
+      });
+    });
   }
   addTransaction = () => {
     const transactionCopy = [
@@ -50,12 +56,13 @@ class Transaction extends Component {
   };
 
   filter = filter => {
-    this.setState(prevState => ({
-      transaction: data.filter(record => {
-        console.log("neco:" + JSON.stringify(filter) + " " + record);
-        return record.type === filter || filter === "all";
-      })
-    }));
+    axios.get("transactions").then(respons => {
+      this.setState({
+        transaction: respons.data.filter(record => {
+          return record.type === filter || filter === "all";
+        })
+      });
+    });
   };
 
   handleImputChange = event => {
