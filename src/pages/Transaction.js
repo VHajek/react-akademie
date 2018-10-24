@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import axios from "../axios";
-import data from "../data.json";
 import styled from "styled-components";
 import TableView from "../components/TableView";
 import Filter from "../components/Filter";
@@ -47,11 +46,16 @@ class Transaction extends Component {
       });
     });
   }
+
   addTransaction = () => {
     const transactionCopy = [
       ...this.state.transaction,
       { ...this.state.newTransaction, id: +new Date() }
     ].sort((a, b) => b.id - a.id);
+    axios
+      .post("/transactions", this.state.newTransaction)
+      .then(response => console.log(response))
+      .catch(error => console.log(error));
     this.setState({ transaction: transactionCopy });
   };
 
@@ -81,7 +85,6 @@ class Transaction extends Component {
 
   render() {
     const {
-      transaction,
       newTransaction: { name, value, type },
       buttons
     } = this.state;
